@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Method × Income → Exam Score | Statistics Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<style>
+:root{--bg:#28282c;--bg-s:#32323a;--bg-c:#2c2c33;--bg-l:#f5f0e8;--bg-ls:#ede8df;--txt:#f0ebe3;--muted:#9da2a5;--dark:#28282c;--dark-m:#5a5f62;--red:#ee3124;--rl:rgba(238,49,36,.12);--blue:#2f6aaf;--bl:rgba(47,106,175,.12);--gold:#deb92c;--gl:rgba(222,185,44,.12);--gray:#c1c4c3;--gray-l:#e2e2e2;--border:rgba(255,255,255,.08);--bl2:rgba(40,40,44,.1);--r:12px;--rs:6px;--sh:0 8px 40px rgba(0,0,0,.35)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--txt);line-height:1.7;overflow-x:hidden}
+img,canvas{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(26,26,30,.93);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;transition:all .3s}
+.nav-brand{font-family:'Fraunces',serif;font-size:.85rem;font-weight:700;color:var(--gold);letter-spacing:.03em;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.brand-pip{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.nav-links{display:flex;list-style:none;gap:0}
+.nav-links a{display:block;padding:.4rem .65rem;font-size:.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border-radius:var(--rs);transition:color .2s,background .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--gold);background:var(--gl)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.hamburger span{width:22px;height:2px;background:var(--txt);border-radius:2px;transition:all .3s;display:block}
+.mob-menu{display:none;position:fixed;top:62px;left:0;right:0;background:rgba(26,26,30,.97);backdrop-filter:blur(20px);padding:.75rem;z-index:999;border-bottom:1px solid var(--border)}
+.mob-menu.open{display:block}
+.mob-menu a{display:block;padding:.7rem 1rem;font-size:.8rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-radius:var(--rs);transition:all .2s}
+.mob-menu a:hover{color:var(--gold);background:var(--gl)}
+
+/* PROGRESS */
+#prog{position:fixed;top:62px;left:0;width:0;height:3px;background:linear-gradient(to right,var(--red),var(--gold));z-index:999;transition:width .12s linear}
+
+/* LAYOUT */
+.wrap{max-width:1200px;margin:0 auto;padding:0 2rem}
+.sec-d{background:var(--bg);color:var(--txt);padding:7rem 0}
+.sec-l{background:var(--bg-l);color:var(--dark);padding:7rem 0}
+.sec-b{background:var(--blue);color:#fff;padding:7rem 0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);padding-top:62px}
+#hcv{position:absolute;inset:0;width:100%;height:100%}
+.hero-in{position:relative;z-index:2;text-align:center;padding:2rem;max-width:900px}
+.eyebrow{font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem}
+.eyebrow::before,.eyebrow::after{content:'';flex:1;max-width:80px;height:1px;background:var(--gold);opacity:.4}
+.hero h1{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(2.2rem,5.5vw,4.4rem);line-height:1.05;letter-spacing:-.02em;color:var(--txt);margin-bottom:1.5rem}
+.hero h1 em{color:var(--gold);font-style:italic}
+.hero-sub{font-family:'Crimson Pro',serif;font-size:clamp(1rem,2vw,1.3rem);color:var(--muted);margin-bottom:.75rem;font-style:italic;max-width:680px;margin-left:auto;margin-right:auto}
+.hero-meta{font-size:.78rem;color:var(--muted);margin-bottom:2rem;letter-spacing:.03em}
+.hero-byline{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-bottom:3rem}
+.hero-byline span{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--blue);background:var(--bl);padding:.3rem 1rem;border-radius:100px;border:1px solid rgba(47,106,175,.3)}
+.scroll-cue{display:inline-flex;flex-direction:column;align-items:center;gap:.5rem;font-size:.72rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;animation:bob 2.2s infinite;cursor:pointer}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+
+/* SECTION LABELS */
+.slabel{font-size:.7rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:.75rem;display:flex;align-items:center;gap:.75rem}
+.slabel::before{content:'';width:24px;height:2px;background:var(--red)}
+.slabel.g{color:var(--gold)}.slabel.g::before{background:var(--gold)}
+.slabel.b{color:var(--blue)}.slabel.b::before{background:var(--blue)}
+.slabel.w{color:rgba(255,255,255,.7)}.slabel.w::before{background:rgba(255,255,255,.5)}
+.sec-l .slabel{color:var(--red)}.sec-l .slabel::before{background:var(--red)}
+.sec-l .slabel.b{color:#1a4f8a}.sec-l .slabel.b::before{background:#1a4f8a}
+.stitle{font-family:'Fraunces',serif;font-weight:700;font-size:clamp(1.8rem,4vw,3rem);letter-spacing:-.02em;margin-bottom:.75rem;line-height:1.15}
+.ssub{font-family:'Crimson Pro',serif;font-size:1.15rem;color:var(--muted);line-height:1.65;max-width:600px}
+.sec-l .ssub{color:var(--dark-m)}
+.sec-b .ssub{color:rgba(255,255,255,.75)}
+.thead{margin-bottom:3.5rem}
+
+/* PULL QUOTE */
+.pq{font-family:'Fraunces',serif;font-size:clamp(1.7rem,3.2vw,2.6rem);font-weight:700;line-height:1.2;letter-spacing:-.02em;color:var(--gold);border-left:4px solid var(--gold);padding-left:1.5rem;font-style:italic}
+.sec-l .pq{color:var(--blue);border-color:var(--blue)}
+.sec-b .pq{color:var(--gold);border-color:var(--gold)}
+
+/* STAT CARDS */
+.scards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:3rem}
+.scard{background:var(--bg-c);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem 1.25rem;text-align:center;position:relative;overflow:hidden;transition:border-color .3s,transform .3s;cursor:default}
+.scard:hover{border-color:var(--gold);transform:translateY(-3px)}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gold)}
+.scard.b::before{background:var(--blue)}.scard.r::before{background:var(--red)}
+.sv{font-family:'Fraunces',serif;font-size:2.4rem;font-weight:900;color:var(--gold);line-height:1;margin-bottom:.2rem}
+.scard.b .sv{color:var(--blue)}.scard.r .sv{color:var(--red)}
+.sk{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted)}
+
+/* BADGES */
+.badges{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}
+.badge{padding:.3rem .8rem;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border:1px solid transparent;transition:all .2s;cursor:default}
+.badge:hover{transform:scale(1.05)}
+.bb{color:var(--blue);background:var(--bl);border-color:rgba(47,106,175,.3)}
+.br{color:var(--red);background:var(--rl);border-color:rgba(238,49,36,.3)}
+.bg{color:var(--gold);background:var(--gl);border-color:rgba(222,185,44,.3)}
+.bk{color:var(--muted);background:rgba(255,255,255,.05);border-color:var(--border)}
+.sec-l .bb{color:#1a4f8a;background:rgba(47,106,175,.1)}
+.sec-l .br{color:#b01c13;background:rgba(238,49,36,.08)}
+.sec-l .bg{color:#8a6a00;background:rgba(222,185,44,.1)}
+.sec-l .bk{color:var(--dark-m);background:rgba(40,40,44,.06);border-color:var(--bl2)}
+
+/* CHART WRAPPERS */
+.cw{background:var(--bg-s);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem;margin-bottom:1.5rem}
+.cw.lt{background:#fff;border-color:var(--bl2);box-shadow:0 2px 16px rgba(40,40,44,.08)}
+.ct{font-family:'Crimson Pro',serif;font-size:1rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem}
+.ct .dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.ct.lt{color:var(--dark)}
+
+/* TABS */
+.tablist{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none}
+.tablist::-webkit-scrollbar{display:none}
+.tbtn{padding:.6rem 1rem;font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;font-family:'Outfit',sans-serif}
+.tbtn:hover{color:var(--txt)}
+.tbtn.act{color:var(--gold);border-bottom-color:var(--gold)}
+.tbtn.sig.act{color:var(--red);border-bottom-color:var(--red)}
+.tpanel{display:none}.tpanel.act{display:block}
+
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:3rem}
+.step{background:var(--bg-c);padding:1.75rem 1.25rem;text-align:center;transition:background .3s;position:relative}
+.step:hover{background:var(--bg-s)}
+.step-n{font-family:'Fraunces',serif;font-size:3rem;font-weight:900;color:rgba(255,255,255,.06);line-height:1;margin-bottom:.5rem;transition:color .3s}
+.step:hover .step-n{color:var(--gold)}
+.step-icon{font-size:1.8rem;margin-bottom:.6rem}
+.step-t{font-family:'Crimson Pro',serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;color:var(--txt)}
+.step-d{font-size:.8rem;color:var(--muted);line-height:1.6}
+
+/* VERDICT CARDS */
+.vgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.25rem;margin-top:2rem}
+.vcard{border-radius:var(--r);padding:1.5rem;border:2px solid transparent;transition:all .3s;position:relative;overflow:hidden}
+.vcard.ns{background:var(--bl);border-color:rgba(47,106,175,.3)}
+.vcard.sig{background:var(--rl);border-color:rgba(238,49,36,.4)}
+.vcard:hover{transform:translateY(-2px)}
+.vi{font-size:1.5rem;margin-bottom:.6rem}
+.vc{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.vr{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;margin-bottom:.4rem}
+.vcard.sig .vr{color:var(--red)}.vcard.ns .vr{color:var(--blue)}
+.vp{font-family:'Crimson Pro',serif;font-size:.9rem;color:var(--muted)}
+
+/* FLOW DIAGRAM */
+.flow{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:2rem 0;justify-content:center}
+.fn{background:var(--bg-c);border:1px solid var(--border);border-radius:var(--r);padding:.8rem 1.2rem;text-align:center;min-width:110px}
+.fn.p{border-color:var(--blue);background:var(--bl)}
+.fn.a{border-color:var(--gold);background:var(--gl)}
+.fn-l{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.2rem}
+.fn-t{font-family:'Crimson Pro',serif;font-size:.95rem;font-weight:700;color:var(--txt)}
+.fn-sub{font-size:.7rem;color:var(--muted);margin-top:.2rem}
+.fa{color:var(--muted);font-size:1.1rem}
+.sec-l .fn{background:#fff;border-color:var(--bl2);box-shadow:0 2px 8px rgba(40,40,44,.06)}
+.sec-l .fn.p{background:rgba(47,106,175,.08);border-color:rgba(47,106,175,.4)}
+.sec-l .fn.a{background:rgba(222,185,44,.08);border-color:rgba(222,185,44,.4)}
+.sec-l .fn-l{color:var(--dark-m)}.sec-l .fn-t{color:var(--dark)}.sec-l .fa{color:var(--dark-m)}
+
+/* BY-HAND */
+.bh{background:var(--bg-c);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:var(--r);padding:1.75rem;margin-top:2rem}
+.bh-t{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.bh-vals{font-family:'Crimson Pro',serif;font-size:.9rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.8}
+.bh-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.6rem}
+.bh-row{display:flex;align-items:center;gap:.5rem;font-size:.85rem;padding:.5rem .75rem;background:rgba(255,255,255,.03);border-radius:var(--rs)}
+.bh-f{font-family:'Crimson Pro',serif;color:var(--muted);flex:1;font-size:.9rem}
+.bh-r{font-weight:700;color:var(--gold)}
+
+/* SKEW NOTE */
+.skn{background:rgba(238,49,36,.07);border:1px solid rgba(238,49,36,.2);border-radius:var(--r);padding:1.25rem 1.5rem;margin-top:1.5rem;display:flex;gap:1rem;align-items:flex-start}
+.ski{font-size:1.4rem;flex-shrink:0;margin-top:.1rem}
+.skn p{font-size:.88rem;color:var(--muted);line-height:1.7}
+.skn strong{color:var(--txt)}
+
+/* VAR TABLE */
+.vtab{width:100%;border-collapse:collapse;margin-top:1.5rem;font-size:.88rem}
+.vtab th{text-align:left;padding:.65rem 1rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;background:var(--bg-s);color:var(--muted);border-bottom:1px solid var(--border)}
+.vtab td{padding:.75rem 1rem;border-bottom:1px solid var(--border);vertical-align:middle}
+.vtab tr:last-child td{border-bottom:none}
+.qt{color:var(--gold);font-weight:700}.cat{color:var(--blue);font-weight:700}
+.sec-l .vtab th{background:#ede8df;color:var(--dark-m);border-color:var(--bl2)}
+.sec-l .vtab td{color:var(--dark);border-color:var(--bl2)}
+.sec-l .qt{color:#8a6a00}.sec-l .cat{color:#1a4f8a}
+
+/* FINDING CALLOUT */
+.fcall{background:linear-gradient(135deg,rgba(238,49,36,.08),rgba(47,106,175,.08));border:1px solid rgba(238,49,36,.2);border-radius:var(--r);padding:2rem;margin-top:2rem;text-align:center}
+.fval{font-family:'Fraunces',serif;font-size:3.2rem;font-weight:900;color:var(--red);line-height:1}
+.flbl{font-size:.82rem;color:var(--muted);margin-top:.5rem}
+
+/* GROUP COMPARE CARDS */
+.gc{background:#fff;border:1px solid var(--bl2);border-radius:var(--r);padding:1.5rem;box-shadow:0 2px 12px rgba(40,40,44,.07)}
+.gc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.gc-name{font-family:'Crimson Pro',serif;font-size:1.1rem;font-weight:700;color:var(--dark)}
+.gc-val{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:900}
+.gc-bar{height:8px;border-radius:4px;background:var(--gray-l);overflow:hidden;margin-bottom:.5rem}
+.gc-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.22,1,.36,1)}
+.gc-sub{font-size:.78rem;color:var(--dark-m)}
+
+/* CONCLUSION */
+.concl-big{font-family:'Fraunces',serif;font-size:clamp(2rem,5vw,4rem);font-weight:900;line-height:1.1;color:#fff;margin-bottom:1.5rem;letter-spacing:-.02em}
+.concl-big em{color:var(--gold);font-style:italic}
+.concl-big .hi{color:#ff8a82}
+.concl-sub{font-family:'Crimson Pro',serif;font-size:1.2rem;color:rgba(255,255,255,.72);max-width:600px;line-height:1.7;margin-bottom:1.5rem}
+.obs-caveat{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:var(--r);padding:1.25rem 1.5rem;display:flex;gap:.75rem;align-items:flex-start;max-width:600px}
+.obs-caveat p{font-size:.88rem;color:rgba(255,255,255,.65);line-height:1.7}
+.obs-caveat strong{color:#fff}
+
+/* LIMITATION CARDS */
+.lcard{background:rgba(47,106,175,.05);border:1px solid rgba(47,106,175,.18);border-radius:var(--r);padding:2rem;position:relative;overflow:hidden}
+.lcard::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--blue)}
+.ln{font-family:'Fraunces',serif;font-size:3.5rem;font-weight:900;color:rgba(47,106,175,.12);line-height:1;margin-bottom:.5rem}
+.lt-title{font-family:'Crimson Pro',serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:.5rem}
+.lt-txt{font-size:.88rem;color:var(--dark-m);line-height:1.7}
+.redo{background:rgba(222,185,44,.07);border:1px dashed rgba(222,185,44,.35);border-radius:var(--r);padding:1.75rem;margin-top:2rem}
+.redo-lbl{font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#8a6a00;margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem}
+.redo-lbl::before{content:'↻';font-size:1.1rem}
+.redo-lbl + p{font-size:.9rem;color:var(--dark-m);line-height:1.7}
+.redo-items{list-style:none;margin-top:.75rem;display:flex;flex-direction:column;gap:.5rem}
+.redo-items li{font-size:.88rem;color:var(--dark-m);padding-left:1.25rem;position:relative;line-height:1.6}
+.redo-items li::before{content:'→';position:absolute;left:0;color:#8a6a00}
+
+/* FOOTER */
+footer{background:#1a1a1e;border-top:1px solid var(--border);padding:4rem 0 2rem}
+.ftg{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.fb{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:700;color:var(--gold);margin-bottom:.75rem}
+.fd{font-size:.83rem;color:var(--muted);line-height:1.7}
+.fst{font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem}
+.fm{list-style:none}
+.fm li{font-size:.88rem;color:var(--txt);padding:.3rem 0;border-bottom:1px solid var(--border)}
+.fm li:last-child{border-bottom:none}
+.fcit{font-size:.75rem;color:var(--muted);line-height:1.8;margin-bottom:.75rem}
+.fbot{border-top:1px solid var(--border);padding-top:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.fbot p{font-size:.73rem;color:var(--muted)}
+.fpips{display:flex;gap:6px;align-items:center}
+.fpips span{width:8px;height:8px;border-radius:50%}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg-s);border-radius:3px}
+
+/* RESPONSIVE */
+@media(max-width:960px){.g2{grid-template-columns:1fr;gap:2.5rem}.g3{grid-template-columns:1fr 1fr}.steps{grid-template-columns:repeat(2,1fr)}.ftg{grid-template-columns:1fr 1fr}.nav-links{display:none}.hamburger{display:flex}}
+@media(max-width:600px){.wrap{padding:0 1.25rem}.sec-d,.sec-l,.sec-b{padding:4.5rem 0}.steps{grid-template-columns:1fr}.g3{grid-template-columns:1fr}.ftg{grid-template-columns:1fr}.scards{grid-template-columns:1fr 1fr}.hero h1{font-size:1.9rem}.g4{grid-template-columns:1fr 1fr}}
+
+/* SCROLL REVEAL */
+[data-aos]{transition-duration:.65s}
+
+/* HIGHLIGHT TEXT */
+.hl-r{color:var(--red);font-weight:700}.hl-g{color:var(--gold);font-weight:700}.hl-b{color:var(--blue);font-weight:700}
+.sec-b .hl-g{color:var(--gold)}
+
+/* NOTE BOX */
+.notebox{background:rgba(47,106,175,.1);border-left:3px solid var(--blue);border-radius:0 var(--rs) var(--rs) 0;padding:1rem 1.25rem;margin-top:1rem;font-size:.85rem;line-height:1.7;color:var(--muted)}
+.notebox strong{color:var(--txt)}
+.sec-l .notebox{background:rgba(47,106,175,.06);color:var(--dark-m)}.sec-l .notebox strong{color:var(--dark)}
+
+/* SIM LEGEND */
+.sim-legend{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1rem;font-size:.8rem;color:var(--muted);align-items:center}
+.sim-legend span{display:flex;align-items:center;gap:.4rem}
+.sim-legend .pip{width:12px;height:12px;border-radius:2px;flex-shrink:0}
+.sim-legend .pip.r{background:rgba(238,49,36,.8)}.sim-legend .pip.b{background:rgba(47,106,175,.7)}
+.sec-l .sim-legend{color:var(--dark-m)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-brand"><span class="brand-pip"></span>Stats Project · Part 2</div>
+  <ul class="nav-links">
+    <li><a href="#home">Home</a></li>
+    <li><a href="#intro">Introduction</a></li>
+    <li><a href="#design">Study Design</a></li>
+    <li><a href="#stats">Descriptive Stats</a></li>
+    <li><a href="#compare">Comparisons</a></li>
+    <li><a href="#chance">Ruling Out Chance</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+    <li><a href="#reflect">Reflection</a></li>
+  </ul>
+  <button class="hamburger" id="hbg" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mob-menu" id="mobm">
+  <a href="#home" onclick="closeMob()">Home</a>
+  <a href="#intro" onclick="closeMob()">Introduction</a>
+  <a href="#design" onclick="closeMob()">Study Design</a>
+  <a href="#stats" onclick="closeMob()">Descriptive Stats</a>
+  <a href="#compare" onclick="closeMob()">Comparisons</a>
+  <a href="#chance" onclick="closeMob()">Ruling Out Chance</a>
+  <a href="#conclusion" onclick="closeMob()">Conclusion</a>
+  <a href="#reflect" onclick="closeMob()">Reflection</a>
+</div>
+<div id="prog"></div>
+
+<!-- ===== SECTION 1: HERO ===== -->
+<section id="home" class="hero">
+  <canvas id="hcv"></canvas>
+  <div class="hero-in">
+    <p class="eyebrow">Integrated Math Plus · Statistics Project Part 2</p>
+    <h1>Does How You Study —<br>and What You Earn —<br><em>Predict Student Success?</em></h1>
+    <p class="hero-sub">Investigating the relationship between study method, family income level, and final exam scores</p>
+    <p class="hero-meta">Dataset: Student Lifestyle vs. Academic Performance · Kaggle &nbsp;|&nbsp; n = 8,000 students</p>
+    <div class="hero-byline">
+      <span>Bryan Tu</span>
+      <span>Andy Sha</span>
+      <span>Kingsley Sy</span>
+    </div>
+    <a href="#intro" class="scroll-cue">
+      <span>Scroll to explore</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ===== SECTION 2: INTRODUCTION ===== -->
+<section id="intro" class="sec-d">
+  <div class="wrap">
+    <div class="g2">
+      <div data-aos="fade-right">
+        <p class="slabel">01 — Introduction</p>
+        <p class="pq">"Does the way you learn shape the grade you earn?"</p>
+        <div class="badges" style="margin-top:2rem">
+          <span class="badge bb">Population Mean</span>
+          <span class="badge br">Observational Study</span>
+          <span class="badge bg">Association</span>
+          <span class="badge bk">n = 8,000</span>
+        </div>
+      </div>
+      <div data-aos="fade-left" data-aos-delay="100">
+        <p style="font-family:'Crimson Pro',serif;font-size:1.1rem;line-height:1.8;color:var(--muted);margin-bottom:1.5rem">
+          This dataset, sourced from Kaggle's <em>Student Lifestyle vs. Academic Performance</em> collection, captures behavioral, socioeconomic, and academic data from <strong class="hl-g">8,000 students</strong>. Variables include how students study (Offline, Online, or Hybrid), their family income level (High, Middle, or Low), and their final exam score — an overall measure of academic achievement.
+        </p>
+        <div style="background:var(--bg-c);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:var(--r);padding:1.25rem 1.5rem;margin-bottom:1.5rem">
+          <p style="font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem">Research Question</p>
+          <p style="font-family:'Crimson Pro',serif;font-size:1.1rem;line-height:1.65;color:var(--txt)">Does a student's study method or family income level have a statistically significant association with their final exam score?</p>
+        </div>
+        <p style="font-size:.9rem;color:var(--muted);line-height:1.7">
+          Because <em>Final Score</em> is a numerical measure, our question asks about a <span class="badge bb" style="font-size:.68rem">population mean</span> — the average score across all students in each group. Understanding this question matters for equity in education: if certain study approaches are strongly linked to academic success, that's information students and educators can act on.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 3: STUDY DESIGN ===== -->
+<section id="design" class="sec-l">
+  <div class="wrap">
+    <div class="thead" data-aos="fade-up">
+      <p class="slabel">02 — Study Design</p>
+      <h2 class="stitle">How Was This Data Collected?</h2>
+      <p class="ssub">Understanding the structure of the study tells us what conclusions we can and can't draw.</p>
+    </div>
+
+    <div class="g2" style="margin-bottom:3.5rem">
+      <div data-aos="fade-right">
+        <h3 style="font-family:'Crimson Pro',serif;font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:1rem">Type of Study</h3>
+        <div style="background:rgba(47,106,175,.07);border:1px solid rgba(47,106,175,.2);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem">
+          <p style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1a4f8a;margin-bottom:.5rem">Observational Study</p>
+          <p style="font-size:.9rem;color:var(--dark-m);line-height:1.7">We observe pre-existing characteristics — study method and family income — and their relationship to final scores. <strong style="color:var(--dark)">No random assignment was made.</strong> Students were not randomly placed into study groups; they chose their own methods. This means we can identify <em>associations</em>, but we cannot claim one variable <em>causes</em> changes in the other.</p>
+        </div>
+        <div style="background:rgba(222,185,44,.07);border:1px solid rgba(222,185,44,.25);border-radius:var(--r);padding:1.5rem">
+          <p style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a6a00;margin-bottom:.5rem">Generalizability</p>
+          <p style="font-size:.9rem;color:var(--dark-m);line-height:1.7">The 8,000 students in this dataset represent a large sample. Our findings describe patterns <em>within this sample</em>. Generalizing to all students worldwide requires caution — the sample's population of origin and selection method affect how broadly these results apply.</p>
+        </div>
+      </div>
+      <div data-aos="fade-left" data-aos-delay="100">
+        <h3 style="font-family:'Crimson Pro',serif;font-size:1.3rem;font-weight:700;color:var(--dark);margin-bottom:1rem">Population → Sample → Analysis</h3>
+        <div class="flow">
+          <div class="fn p"><div class="fn-l">Population</div><div class="fn-t">All Students</div><div class="fn-sub">Worldwide</div></div>
+          <div class="fa">→</div>
+          <div class="fn"><div class="fn-l">Sample</div><div class="fn-t">8,000 Students</div><div class="fn-sub">This Dataset</div></div>
+          <div class="fa">→</div>
+          <div class="fn"><div class="fn-l">Variables</div><div class="fn-t">3 Measured</div><div class="fn-sub">Study, Income, Score</div></div>
+          <div class="fa">→</div>
+          <div class="fn a"><div class="fn-l">Analysis</div><div class="fn-t">Inference</div><div class="fn-sub">Association?</div></div>
+        </div>
+        <table class="vtab">
+          <thead><tr><th>Variable</th><th>Type</th><th>Values</th></tr></thead>
+          <tbody>
+            <tr><td>Final Score</td><td><span class="qt">Quantitative</span></td><td>22.81 – 99.98</td></tr>
+            <tr><td>Study Method</td><td><span class="cat">Categorical</span></td><td>Offline · Online · Hybrid</td></tr>
+            <tr><td>Family Income</td><td><span class="cat">Categorical</span></td><td>High · Middle · Low</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div data-aos="fade-up">
+      <p style="font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dark-m);margin-bottom:.75rem">Key Vocabulary</p>
+      <div class="badges">
+        <span class="badge bb">Population</span>
+        <span class="badge bb">Sample</span>
+        <span class="badge bb">Parameter</span>
+        <span class="badge bb">Statistic</span>
+        <span class="badge br">Observational Study</span>
+        <span class="badge br">Association</span>
+        <span class="badge bg">Population Mean</span>
+        <span class="badge bk">Categorical Variable</span>
+        <span class="badge bk">Quantitative Variable</span>
+        <span class="badge bk">Selection Bias</span>
+        <span class="badge br">No Random Assignment</span>
+        <span class="badge bg">Generalizability</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 4: DESCRIPTIVE STATS ===== -->
+<section id="stats" class="sec-d">
+  <div class="wrap">
+    <div class="thead" data-aos="fade-up">
+      <p class="slabel g">03 — Descriptive Statistics</p>
+      <h2 class="stitle">Quantitative Analysis of Final Score</h2>
+      <p class="ssub">Full dataset — n = 8,000 students. All statistics computed from the raw data.</p>
+    </div>
+
+    <div class="scards" data-aos="fade-up">
+      <div class="scard"><div class="sv" data-count="83.21" data-dec="2">0</div><div class="sk">Mean</div></div>
+      <div class="scard b"><div class="sv" data-count="86.51" data-dec="2">0</div><div class="sk">Median</div></div>
+      <div class="scard r"><div class="sv" data-count="12.76" data-dec="2">0</div><div class="sk">Std. Deviation</div></div>
+      <div class="scard"><div class="sv" data-count="77.17" data-dec="2">0</div><div class="sk">Range</div></div>
+      <div class="scard b"><div class="sv" data-count="17.57" data-dec="2">0</div><div class="sk">IQR</div></div>
+      <div class="scard r"><div class="sv" data-count="8000" data-dec="0">0</div><div class="sk">Sample Size</div></div>
+    </div>
+
+    <!-- Histogram -->
+    <div class="cw" data-aos="fade-up">
+      <p class="ct"><span class="dot"></span>Distribution of Final Scores — Histogram with Normal Curve Overlay</p>
+      <canvas id="histChart" height="100"></canvas>
+    </div>
+
+    <div class="skn" data-aos="fade-up">
+      <div class="ski">📉</div>
+      <div>
+        <p><strong>The distribution is left-skewed.</strong> There is a long tail toward lower scores on the left, pulling the mean (83.21) below the median (86.51). The bulk of students score between 80 and 100. Because the data is not symmetric and not bell-shaped, <strong>applying a normal curve is not appropriate for this data</strong> — the dashed normal curve shown above visibly fails to match the histogram's actual shape. Since the distribution is not approximately normal, z-scores are <strong>not applicable</strong> for this dataset. Instead, we use the median (86.51) and IQR (17.57) as our preferred measures of center and spread, since these are resistant to the skew and outliers.</p>
+      </div>
+    </div>
+
+    <div class="bh" data-aos="fade-up" style="margin-top:2.5rem">
+      <p class="bh-t">📝 By-Hand Calculations — Sample of 10 Values</p>
+      <p class="bh-vals">The following calculations use a representative sample of 10 values drawn from the dataset to demonstrate the process by hand. These are not the full-dataset statistics shown above.</p>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">Sorted data (least to most): <span style="color:var(--txt);font-family:'Crimson Pro',serif;font-size:.95rem"> 44.64, 66.51, 74.70, 76.46, 81.24, 83.59, 86.11, 87.10, 96.95, 99.70</span></p>
+      <div class="bh-grid">
+        <div class="bh-row"><span class="bh-f">Mean = Σx / n</span><span class="bh-r">79.70</span></div>
+        <div class="bh-row"><span class="bh-f">Median = avg of 5th &amp; 6th</span><span class="bh-r">82.415</span></div>
+        <div class="bh-row"><span class="bh-f">Range = 99.70 − 44.64</span><span class="bh-r">55.06</span></div>
+        <div class="bh-row"><span class="bh-f">Q1 = 74.70</span><span class="bh-r" style="color:var(--blue)">Q3 = 87.10</span></div>
+        <div class="bh-row"><span class="bh-f">IQR = Q3 − Q1</span><span class="bh-r">12.40</span></div>
+        <div class="bh-row"><span class="bh-f">Pop. SD = √(Σ(x−x̄)² / n)</span><span class="bh-r">14.999</span></div>
+      </div>
+      <div class="notebox" style="margin-top:1rem">The by-hand mean (79.70) differs from the full dataset mean (83.21) because this is a small 10-value demonstration sample, not the full 8,000. The full dataset statistics are in the cards above and are used for all analysis.</div>
+    </div>
+
+    <div class="badges" style="margin-top:2rem" data-aos="fade-up">
+      <span class="badge bg">Mean</span><span class="badge bg">Median</span><span class="badge bg">Standard Deviation</span>
+      <span class="badge bk">Range</span><span class="badge bk">IQR</span><span class="badge br">Left Skewed</span>
+      <span class="badge bk">Histogram</span><span class="badge br">Normal Curve (Not Applicable)</span>
+      <span class="badge br">Z-Score (Not Applicable)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 5: GROUP COMPARISONS ===== -->
+<section id="compare" class="sec-l">
+  <div class="wrap">
+    <div class="thead" data-aos="fade-up">
+      <p class="slabel">04 — Group Comparisons</p>
+      <h2 class="stitle">How Do the Groups Compare?</h2>
+      <p class="ssub">Mean Final Score broken down by Study Method and Family Income Level.</p>
+    </div>
+
+    <div class="g2" style="margin-bottom:4rem">
+      <div data-aos="fade-right">
+        <div class="cw lt">
+          <p class="ct lt"><span class="dot"></span>Average Final Score by Study Method</p>
+          <canvas id="smChart" height="130"></canvas>
+        </div>
+        <div style="margin-top:1.25rem">
+          <p style="font-family:'Crimson Pro',serif;font-size:1rem;line-height:1.75;color:var(--dark-m)">
+            <strong style="color:var(--dark)">Hybrid students averaged the highest final score (83.82)</strong>, followed by Offline (83.02) and Online (82.85). While the overall differences are modest in absolute terms, statistical testing reveals this gap is meaningful. We observed a clear association between using a Hybrid study approach and higher academic performance.
+          </p>
+          <div class="fcall" style="margin-top:1rem;border-color:rgba(222,185,44,.3)">
+            <div style="font-family:'Fraunces',serif;font-size:2.5rem;font-weight:900;color:#8a6a00;line-height:1">+0.97 pts</div>
+            <p class="flbl" style="color:var(--dark-m)">Hybrid advantage over Online (largest gap observed)</p>
+          </div>
+        </div>
+      </div>
+      <div data-aos="fade-left" data-aos-delay="100">
+        <div class="g3" style="gap:.75rem;margin-bottom:1.5rem">
+          <div class="gc" id="gc-offline"><div class="gc-head"><span class="gc-name">Offline</span><span class="gc-val" style="color:#2f6aaf">83.02</span></div><div class="gc-bar"><div class="gc-fill" style="background:var(--blue);width:0" data-w="83.02"></div></div><div class="gc-sub">n = 3,170 students</div></div>
+          <div class="gc" id="gc-online"><div class="gc-head"><span class="gc-name">Online</span><span class="gc-val" style="color:#9da2a5">82.85</span></div><div class="gc-bar"><div class="gc-fill" style="background:var(--gray);width:0" data-w="82.85"></div></div><div class="gc-sub">n = 2,460 students</div></div>
+          <div class="gc" id="gc-hybrid"><div class="gc-head"><span class="gc-name">Hybrid</span><span class="gc-val" style="color:var(--red)">83.82</span></div><div class="gc-bar"><div class="gc-fill" style="background:var(--red);width:0" data-w="83.82"></div></div><div class="gc-sub">n = 2,370 students</div></div>
+        </div>
+        <div class="notebox">The difference between Offline and Online (0.17 pts) is not statistically significant. The key finding is that <strong>Hybrid outperforms both other methods</strong> by a meaningful margin.</div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div data-aos="fade-right">
+        <div class="cw lt">
+          <p class="ct lt"><span class="dot"></span>Average Final Score by Family Income Level</p>
+          <canvas id="incChart" height="130"></canvas>
+        </div>
+      </div>
+      <div data-aos="fade-left" data-aos-delay="100">
+        <p style="font-family:'Crimson Pro',serif;font-size:1rem;line-height:1.75;color:var(--dark-m);margin-bottom:1.25rem">
+          Across all three income levels — <strong style="color:var(--dark)">High (83.17), Middle (83.13), and Low (83.39)</strong> — the average final scores are remarkably similar, all falling within a 0.26-point range. Low-income students actually averaged very slightly higher than High-income students, though this difference is negligible.
+        </p>
+        <div class="g3" style="gap:.75rem">
+          <div class="gc"><div class="gc-head"><span class="gc-name">High</span><span class="gc-val" style="color:#8a6a00">83.17</span></div><div class="gc-bar"><div class="gc-fill" style="background:var(--gold);width:0" data-w="83.17"></div></div><div class="gc-sub">n = 2,040</div></div>
+          <div class="gc"><div class="gc-head"><span class="gc-name">Middle</span><span class="gc-val" style="color:var(--blue)">83.13</span></div><div class="gc-bar"><div class="gc-fill" style="background:var(--blue);width:0" data-w="83.13"></div></div><div class="gc-sub">n = 3,912</div></div>
+          <div class="gc"><div class="gc-head"><span class="gc-name">Low</span><span class="gc-val" style="color:var(--red)">83.39</span></div><div class="gc-bar"><div class="gc-fill" style="background:var(--red);width:0" data-w="83.39"></div></div><div class="gc-sub">n = 2,048</div></div>
+        </div>
+        <div class="fcall" style="margin-top:1rem;border-color:rgba(47,106,175,.25)">
+          <div style="font-family:'Fraunces',serif;font-size:2.5rem;font-weight:900;color:#1a4f8a;line-height:1">0.26 pts</div>
+          <p class="flbl" style="color:var(--dark-m)">Maximum spread across all income groups — essentially no difference</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="badges" style="margin-top:2.5rem" data-aos="fade-up">
+      <span class="badge bb">Group Mean</span><span class="badge br">Observed Difference</span><span class="badge bg">Hybrid Advantage</span><span class="badge bk">No Income Effect</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 6: RULING OUT CHANCE ===== -->
+<section id="chance" class="sec-d">
+  <div class="wrap">
+    <div class="thead" data-aos="fade-up">
+      <p class="slabel r">05 — Inferential Statistics</p>
+      <h2 class="stitle">Ruling Out Chance</h2>
+      <p class="ssub">Could the differences we observed just be random variation? We ran 1,000 simulations to find out.</p>
+    </div>
+
+    <!-- 4-Step Explainer -->
+    <div class="steps" data-aos="fade-up">
+      <div class="step"><div class="step-n">1</div><div class="step-icon">🔍</div><div class="step-t">Observe</div><div class="step-d">Calculate the real mean difference between groups in our data.</div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-icon">🔀</div><div class="step-t">Simulate</div><div class="step-d">Randomly shuffle group labels 1,000 times. Compute the mean difference each time — assuming no true effect.</div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-icon">📊</div><div class="step-t">Compare</div><div class="step-d">Plot all 1,000 simulated differences. How often did random chance produce a gap as large as ours?</div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-icon">✅</div><div class="step-t">Conclude</div><div class="step-d">If p &lt; 0.05, the observed difference is unlikely to be due to chance — we call it statistically significant.</div></div>
+    </div>
+
+    <div class="notebox" style="margin-bottom:2.5rem" data-aos="fade-up">
+      <strong>How to read these charts:</strong> The bars show the distribution of 1,000 simulated mean differences when there is <em>no real effect</em>. The <strong style="color:var(--red)">red vertical line</strong> marks the actual observed difference. <span style="color:rgba(238,49,36,.9);font-weight:600">Red bars</span> are simulations that produced a difference at least as extreme as ours — those are counted to calculate the p-value.
+    </div>
+
+    <!-- Study Method Simulations -->
+    <div data-aos="fade-up" style="margin-bottom:3rem">
+      <p style="font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Study Method Comparisons</p>
+      <div class="tabs">
+        <div class="tablist" id="sm-tabs">
+          <button class="tbtn act" data-tab="sm0">Offline vs Online</button>
+          <button class="tbtn sig" data-tab="sm1">Offline vs Hybrid ✓</button>
+          <button class="tbtn sig" data-tab="sm2">Online vs Hybrid ✓</button>
+        </div>
+        <div class="tpanel act" id="sm0">
+          <div class="sim-legend"><span><span class="pip b"></span>Random simulations</span><span><span class="pip r"></span>As extreme as observed</span></div>
+          <div class="cw"><p class="ct"><span class="dot" style="background:var(--blue)"></span>1,000 Simulated Mean Differences (Offline − Online) &nbsp;<span style="font-size:.8rem;color:var(--muted)">Observed: +0.17 pts &nbsp;·&nbsp; p = 0.673</span></p><canvas id="sim-sm0" height="100"></canvas></div>
+          <div class="vcard ns" style="max-width:500px"><div class="vi">🔵</div><div class="vc">Offline vs Online</div><div class="vr">Not Statistically Significant</div><div class="vp">p = 0.673 — In 67.3% of simulations, random chance produced a difference at least this large. The 0.17-point gap is entirely consistent with random variation. We do not have evidence of a real difference between Offline and Online study methods.</div></div>
+        </div>
+        <div class="tpanel" id="sm1">
+          <div class="sim-legend"><span><span class="pip b"></span>Random simulations</span><span><span class="pip r"></span>As extreme as observed</span></div>
+          <div class="cw"><p class="ct"><span class="dot" style="background:var(--red)"></span>1,000 Simulated Mean Differences (Offline − Hybrid) &nbsp;<span style="font-size:.8rem;color:var(--muted)">Observed: −0.80 pts &nbsp;·&nbsp; p = 0.020</span></p><canvas id="sim-sm1" height="100"></canvas></div>
+          <div class="vcard sig" style="max-width:500px"><div class="vi">🔴</div><div class="vc">Offline vs Hybrid</div><div class="vr">Statistically Significant (p &lt; 0.05)</div><div class="vp">p = 0.020 — Only 2.0% of simulations produced a difference as extreme as the real −0.80 pts. This is below our significance threshold of α = 0.05. There is convincing evidence that Hybrid students score higher than Offline students on average — this is unlikely to be due to chance alone.</div></div>
+        </div>
+        <div class="tpanel" id="sm2">
+          <div class="sim-legend"><span><span class="pip b"></span>Random simulations</span><span><span class="pip r"></span>As extreme as observed</span></div>
+          <div class="cw"><p class="ct"><span class="dot" style="background:var(--red)"></span>1,000 Simulated Mean Differences (Online − Hybrid) &nbsp;<span style="font-size:.8rem;color:var(--muted)">Observed: −0.97 pts &nbsp;·&nbsp; p = 0.011</span></p><canvas id="sim-sm2" height="100"></canvas></div>
+          <div class="vcard sig" style="max-width:500px"><div class="vi">🔴</div><div class="vc">Online vs Hybrid</div><div class="vr">Statistically Significant (p &lt; 0.05)</div><div class="vp">p = 0.011 — Only 1.1% of simulations produced a difference this large. This is the strongest finding in the study. There is strong evidence that Hybrid students score significantly higher than Online students on average.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Income Simulations -->
+    <div data-aos="fade-up" style="margin-bottom:3rem">
+      <p style="font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Family Income Level Comparisons</p>
+      <div class="tabs">
+        <div class="tablist" id="inc-tabs">
+          <button class="tbtn act" data-tab="inc0">High vs Middle</button>
+          <button class="tbtn" data-tab="inc1">High vs Low</button>
+          <button class="tbtn" data-tab="inc2">Middle vs Low</button>
+        </div>
+        <div class="tpanel act" id="inc0">
+          <div class="sim-legend"><span><span class="pip b"></span>Random simulations</span><span><span class="pip r"></span>As extreme as observed</span></div>
+          <div class="cw"><p class="ct"><span class="dot" style="background:var(--blue)"></span>1,000 Simulated Mean Differences (High − Middle) &nbsp;<span style="font-size:.8rem;color:var(--muted)">Observed: +0.04 pts &nbsp;·&nbsp; p = 0.927</span></p><canvas id="sim-inc0" height="100"></canvas></div>
+          <div class="vcard ns" style="max-width:500px"><div class="vi">🔵</div><div class="vc">High vs Middle Income</div><div class="vr">Not Statistically Significant</div><div class="vp">p = 0.927 — The observed difference of only 0.04 points is almost exactly zero. 92.7% of random simulations produce a difference this large or larger. There is no meaningful difference in scores between High and Middle income students.</div></div>
+        </div>
+        <div class="tpanel" id="inc1">
+          <div class="sim-legend"><span><span class="pip b"></span>Random simulations</span><span><span class="pip r"></span>As extreme as observed</span></div>
+          <div class="cw"><p class="ct"><span class="dot" style="background:var(--blue)"></span>1,000 Simulated Mean Differences (High − Low) &nbsp;<span style="font-size:.8rem;color:var(--muted)">Observed: −0.22 pts &nbsp;·&nbsp; p = 0.581</span></p><canvas id="sim-inc1" height="100"></canvas></div>
+          <div class="vcard ns" style="max-width:500px"><div class="vi">🔵</div><div class="vc">High vs Low Income</div><div class="vr">Not Statistically Significant</div><div class="vp">p = 0.581 — In 58.1% of simulations, chance alone produced a gap ≥ 0.22 points. Not significant. Interestingly, Low-income students scored very slightly higher on average — but this too is not meaningful.</div></div>
+        </div>
+        <div class="tpanel" id="inc2">
+          <div class="sim-legend"><span><span class="pip b"></span>Random simulations</span><span><span class="pip r"></span>As extreme as observed</span></div>
+          <div class="cw"><p class="ct"><span class="dot" style="background:var(--blue)"></span>1,000 Simulated Mean Differences (Middle − Low) &nbsp;<span style="font-size:.8rem;color:var(--muted)">Observed: −0.26 pts &nbsp;·&nbsp; p = 0.446</span></p><canvas id="sim-inc2" height="100"></canvas></div>
+          <div class="vcard ns" style="max-width:500px"><div class="vi">🔵</div><div class="vc">Middle vs Low Income</div><div class="vr">Not Statistically Significant</div><div class="vp">p = 0.446 — In 44.6% of random simulations, chance produced a gap this large. Not significant at α = 0.05.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verdict Summary -->
+    <div data-aos="fade-up">
+      <p style="font-size:.78rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Overall Findings — Significance Summary (α = 0.05)</p>
+      <div class="vgrid">
+        <div class="vcard ns"><div class="vi">🔵</div><div class="vc">Offline vs Online</div><div class="vr">Not Significant</div><div class="vp">p = 0.673</div></div>
+        <div class="vcard sig"><div class="vi">🔴</div><div class="vc">Offline vs Hybrid</div><div class="vr">Significant ✓</div><div class="vp">p = 0.020</div></div>
+        <div class="vcard sig"><div class="vi">🔴</div><div class="vc">Online vs Hybrid</div><div class="vr">Significant ✓</div><div class="vp">p = 0.011</div></div>
+        <div class="vcard ns"><div class="vi">🔵</div><div class="vc">High vs Middle Income</div><div class="vr">Not Significant</div><div class="vp">p = 0.927</div></div>
+        <div class="vcard ns"><div class="vi">🔵</div><div class="vc">High vs Low Income</div><div class="vr">Not Significant</div><div class="vp">p = 0.581</div></div>
+        <div class="vcard ns"><div class="vi">🔵</div><div class="vc">Middle vs Low Income</div><div class="vr">Not Significant</div><div class="vp">p = 0.446</div></div>
+      </div>
+    </div>
+
+    <div class="badges" style="margin-top:2.5rem" data-aos="fade-up">
+      <span class="badge bg">Randomization Distribution</span><span class="badge br">P-Value</span><span class="badge br">Statistically Significant</span><span class="badge bb">Simulation</span><span class="badge bk">α = 0.05</span><span class="badge bk">Association (Not Causation)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 7: CONCLUSION ===== -->
+<section id="conclusion" class="sec-b">
+  <div class="wrap">
+    <div class="g2">
+      <div data-aos="fade-right">
+        <p class="slabel w">06 — Conclusion</p>
+        <h2 class="concl-big">Hybrid learning is <em>associated</em> with <span class="hi">higher scores.</span></h2>
+        <p class="concl-sub">Our randomization analysis found statistically significant evidence that students using a Hybrid study method scored higher on average than both Offline and Online learners (p = 0.020 and p = 0.011, respectively).</p>
+        <p class="concl-sub" style="margin-top:1rem">Family income level showed <strong style="color:#fff">no statistically significant association</strong> with final score at any comparison — the differences were all smaller than 0.26 points and consistent with random variation.</p>
+        <div class="obs-caveat" style="margin-top:1.5rem">
+          <span style="font-size:1.4rem;flex-shrink:0">⚠️</span>
+          <p><strong>Important:</strong> Because this is an <strong>observational study</strong>, we can only conclude that there is a <em>statistically significant association</em> between study method and final score — not that Hybrid studying <em>causes</em> higher scores. Other factors (motivation, discipline, access to resources) may explain the difference.</p>
+        </div>
+      </div>
+      <div data-aos="fade-left" data-aos-delay="150">
+        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:var(--r);padding:2rem;margin-bottom:1.5rem">
+          <p class="pq" style="font-size:1.4rem;color:var(--gold);border-color:var(--gold)">"The Hybrid approach is the only study method associated with a statistically distinguishable advantage — and income level appears to have no significant bearing on final scores in this sample."</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div style="background:rgba(238,49,36,.15);border:1px solid rgba(238,49,36,.3);border-radius:var(--r);padding:1.25rem;text-align:center">
+            <div style="font-family:'Fraunces',serif;font-size:2rem;font-weight:900;color:#ff8a82;line-height:1">2</div>
+            <p style="font-size:.75rem;color:rgba(255,255,255,.65);margin-top:.35rem">Significant differences found<br>(both involve Hybrid)</p>
+          </div>
+          <div style="background:rgba(47,106,175,.2);border:1px solid rgba(47,106,175,.4);border-radius:var(--r);padding:1.25rem;text-align:center">
+            <div style="font-family:'Fraunces',serif;font-size:2rem;font-weight:900;color:#7ab2e8;line-height:1">4</div>
+            <p style="font-size:.75rem;color:rgba(255,255,255,.65);margin-top:.35rem">Non-significant findings<br>(including all income comparisons)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 8: LIMITATIONS ===== -->
+<section id="reflect" class="sec-l">
+  <div class="wrap">
+    <div class="thead" data-aos="fade-up">
+      <p class="slabel b">07 — Limitations &amp; Reflection</p>
+      <h2 class="stitle">What Can't We Claim?</h2>
+      <p class="ssub">Intellectual honesty means acknowledging what our study design can and cannot tell us.</p>
+    </div>
+
+    <div class="g3" data-aos="fade-up">
+      <div class="lcard">
+        <div class="ln">01</div>
+        <h3 class="lt-title">No Causal Claims</h3>
+        <p class="lt-txt">Because we did not randomly assign students to study methods, we cannot say that Hybrid studying <em>causes</em> higher scores. Students who choose Hybrid methods may already differ in important ways — they may be more motivated, have better resources, or have higher prior GPA. These are <strong>confounding variables</strong> that could explain the score difference independently of study method.</p>
+      </div>
+      <div class="lcard">
+        <div class="ln">02</div>
+        <h3 class="lt-title">Confounding Variables</h3>
+        <p class="lt-txt">Variables not in this dataset — total hours studied per week, prior academic performance, teacher quality, parental involvement, school resources, and motivation level — may all be correlated with both study method and final score. Without controlling for these, we cannot isolate the true effect of study method alone.</p>
+      </div>
+      <div class="lcard">
+        <div class="ln">03</div>
+        <h3 class="lt-title">Generalizability</h3>
+        <p class="lt-txt">This dataset comes from a single source. The students' school system, geographic region, and demographic characteristics are not fully described, which limits how broadly we can apply these findings. Results may not generalize to all educational contexts, countries, or grade levels.</p>
+      </div>
+    </div>
+
+    <div class="redo" data-aos="fade-up">
+      <p class="redo-lbl">If We Could Redo This Study…</p>
+      <p>To establish stronger evidence and allow for causal conclusions, future research could:</p>
+      <ul class="redo-items">
+        <li><strong>Randomly assign students</strong> to Offline, Online, or Hybrid groups for a semester — this would allow us to make causal claims about the impact of study method.</li>
+        <li><strong>Collect additional variables</strong> such as study hours per week, prior GPA, attendance rate, and parental education level to control for confounders in a regression model.</li>
+        <li><strong>Use a larger, more diverse sample</strong> drawn from multiple schools and regions to improve generalizability and external validity.</li>
+        <li><strong>Track students longitudinally</strong> across multiple semesters to assess whether the Hybrid advantage is consistent over time.</li>
+      </ul>
+    </div>
+
+    <div class="badges" style="margin-top:2rem" data-aos="fade-up">
+      <span class="badge br">Observational Study Limitation</span><span class="badge bk">Confounding Variables</span><span class="badge bb">External Validity</span><span class="badge bg">Future Research</span><span class="badge bk">Random Assignment</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="wrap">
+    <div class="ftg">
+      <div>
+        <p class="fb">Study Method × Income → Exam Score</p>
+        <p class="fd">A statistics project investigating whether study method and family income level are associated with final exam performance. Part 2 of the Integrated Math Plus Statistics Project.</p>
+      </div>
+      <div>
+        <p class="fst">Group Members</p>
+        <ul class="fm">
+          <li>Bryan Tu</li>
+          <li>Andy Sha</li>
+          <li>Kingsley Sy</li>
+        </ul>
+        <p style="font-size:.75rem;color:var(--muted);margin-top:.75rem">Integrated Math Plus<br>Statistics Project Part 2<br>Due: May 18th</p>
+      </div>
+      <div>
+        <p class="fst">Data Source</p>
+        <p class="fcit">Chhetri, S. (n.d.). <em>Student Lifestyle vs. Academic Performance Dataset.</em> Kaggle. https://www.kaggle.com/datasets/sarveshchhetri/student-lifestyle-vs-academic-performance-dataset</p>
+        <p class="fcit">Analysis tools: Microsoft Excel (simulations &amp; descriptive stats), Chart.js (visualizations)</p>
+      </div>
+    </div>
+    <div class="fbot">
+      <p>© Integrated Math Plus · Statistics Project Part 2 · All statistics derived from original dataset.</p>
+      <div class="fpips">
+        <span style="background:var(--red)"></span>
+        <span style="background:var(--blue)"></span>
+        <span style="background:var(--gold)"></span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+// ===== DATA =====
+const SIM = {
+  sm0:{obs:0.1721,p:0.673,centers:[-0.9829,-0.9107,-0.8385,-0.7663,-0.6942,-0.622,-0.5498,-0.4776,-0.4054,-0.3333,-0.2611,-0.1889,-0.1167,-0.0446,0.0276,0.0998,0.172,0.2442,0.3163,0.3885,0.4607,0.5329,0.6051,0.6772,0.7494,0.8216,0.8938,0.9659,1.0381,1.1103],counts:[1,2,2,9,10,10,24,27,59,57,53,85,80,81,81,72,74,58,54,48,39,19,16,13,11,8,4,1,0,2]},
+  sm1:{obs:-0.7965,p:0.020,centers:[-1.1517,-1.0648,-0.978,-0.8911,-0.8043,-0.7174,-0.6306,-0.5437,-0.4569,-0.37,-0.2831,-0.1963,-0.1094,-0.0226,0.0643,0.1511,0.238,0.3249,0.4117,0.4986,0.5854,0.6723,0.7591,0.846,0.9329,1.0197,1.1066,1.1934,1.2803,1.3671],counts:[3,0,0,6,6,18,19,30,46,48,68,97,102,113,101,97,67,51,44,34,18,18,6,4,1,1,1,0,0,1]},
+  sm2:{obs:-0.9687,p:0.011,centers:[-1.2817,-1.1977,-1.1137,-1.0298,-0.9458,-0.8618,-0.7779,-0.6939,-0.6099,-0.526,-0.442,-0.358,-0.274,-0.1901,-0.1061,-0.0221,0.0618,0.1458,0.2298,0.3137,0.3977,0.4817,0.5657,0.6496,0.7336,0.8176,0.9015,0.9855,1.0695,1.1534],counts:[1,0,0,2,0,9,12,23,23,37,51,59,59,87,86,64,96,83,73,67,46,46,26,12,9,7,11,5,4,2]},
+  inc0:{obs:0.0353,p:0.927,centers:[-1.2358,-1.1584,-1.081,-1.0037,-0.9263,-0.8489,-0.7715,-0.6941,-0.6167,-0.5393,-0.4619,-0.3845,-0.3071,-0.2297,-0.1523,-0.075,0.0024,0.0798,0.1572,0.2346,0.312,0.3894,0.4668,0.5442,0.6216,0.699,0.7764,0.8538,0.9311,1.0085],counts:[1,1,2,5,4,3,10,10,25,31,38,41,60,64,98,80,76,71,85,75,64,54,36,21,22,5,5,7,4,2]},
+  inc1:{obs:-0.2247,p:0.581,centers:[-1.122,-1.0434,-0.9648,-0.8862,-0.8076,-0.7289,-0.6503,-0.5717,-0.4931,-0.4145,-0.3358,-0.2572,-0.1786,-0.1,-0.0214,0.0573,0.1359,0.2145,0.2931,0.3717,0.4504,0.529,0.6076,0.6862,0.7648,0.8434,0.9221,1.0007,1.0793,1.1579],counts:[1,1,2,6,6,14,26,23,42,48,55,55,74,75,78,78,63,67,74,49,43,41,15,24,18,9,8,3,1,1]},
+  inc2:{obs:-0.2599,p:0.446,centers:[-1.0045,-0.9238,-0.843,-0.7622,-0.6815,-0.6007,-0.5199,-0.4392,-0.3584,-0.2776,-0.1969,-0.1161,-0.0354,0.0454,0.1262,0.2069,0.2877,0.3685,0.4492,0.53,0.6107,0.6915,0.7723,0.853,0.9338,1.0146,1.0953,1.1761,1.2569,1.3376],counts:[3,1,2,10,17,16,27,49,46,66,78,93,110,89,76,72,63,48,30,43,28,14,10,5,2,0,1,0,0,1]}
+};
+const HIST = {
+  labels:["20–26","26–33","33–40","40–46","46–53","53–60","60–66","66–73","73–80","80–86","86–93","93–100"],
+  data:[1,5,28,59,118,280,485,727,990,1354,2031,1922],
+  centers:[23.3,30,36.7,43.3,50,56.7,63.3,70,76.7,83.3,90,96.7]
+};
+const MEAN=83.21,SD=12.76,N=8000;
+
+// ===== INIT =====
+AOS.init({duration:650,once:true,offset:60});
+
+// ===== PROGRESS BAR =====
+window.addEventListener('scroll',()=>{
+  const pct=window.scrollY/(document.body.scrollHeight-window.innerHeight);
+  document.getElementById('prog').style.width=(pct*100)+'%';
+});
+
+// ===== HAMBURGER =====
+document.getElementById('hbg').addEventListener('click',()=>{
+  document.getElementById('mobm').classList.toggle('open');
+});
+function closeMob(){document.getElementById('mobm').classList.remove('open');}
+
+// ===== SCROLLSPY =====
+const sections=document.querySelectorAll('section[id]');
+const navLinks=document.querySelectorAll('.nav-links a');
+const spy=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(l=>l.classList.remove('active'));
+      const a=document.querySelector(`.nav-links a[href="#${e.target.id}"]`);
+      if(a)a.classList.add('active');
+    }
+  });
+},{threshold:0.25,rootMargin:'-70px 0px -50% 0px'});
+sections.forEach(s=>spy.observe(s));
+
+// ===== COUNTER ANIMATION =====
+function animateCounter(el){
+  const target=parseFloat(el.dataset.count);
+  const dec=parseInt(el.dataset.dec||0);
+  const duration=1400;
+  const start=performance.now();
+  function update(now){
+    const t=Math.min((now-start)/duration,1);
+    const ease=1-Math.pow(1-t,3);
+    const val=ease*target;
+    el.textContent=dec>0?val.toFixed(dec):Math.floor(val).toLocaleString();
+    if(t<1)requestAnimationFrame(update);
+    else el.textContent=dec>0?target.toFixed(dec):target.toLocaleString();
+  }
+  requestAnimationFrame(update);
+}
+const counterObserver=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      animateCounter(e.target);
+      counterObserver.unobserve(e.target);
+    }
+  });
+},{threshold:0.5});
+document.querySelectorAll('[data-count]').forEach(el=>counterObserver.observe(el));
+
+// ===== PROGRESS BAR FILLS =====
+const fillObserver=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const fills=e.target.querySelectorAll('.gc-fill[data-w]');
+      fills.forEach(f=>{
+        const v=parseFloat(f.dataset.w);
+        const min=82.5,max=84.5;
+        const pct=((v-min)/(max-min))*100;
+        setTimeout(()=>{f.style.width=pct+'%';},200);
+      });
+      fillObserver.unobserve(e.target);
+    }
+  });
+},{threshold:0.3});
+document.querySelectorAll('#compare').forEach(s=>fillObserver.observe(s));
+
+// ===== CHART.JS DEFAULTS =====
+Chart.defaults.font.family="'Outfit',sans-serif";
+Chart.defaults.color='rgba(157,162,165,0.85)';
+
+// ===== VERTICAL LINE PLUGIN =====
+const vlinePlugin={
+  id:'vline',
+  afterDraw(chart){
+    const v=chart.options.plugins&&chart.options.plugins.vline;
+    if(!v)return;
+    const{ctx,scales:{x,y}}=chart;
+    const xp=x.getPixelForValue(v.value);
+    ctx.save();
+    ctx.beginPath();
+    ctx.strokeStyle=v.color||'#ee3124';
+    ctx.lineWidth=v.width||2.5;
+    ctx.setLineDash(v.dash||[]);
+    ctx.moveTo(xp,y.top);
+    ctx.lineTo(xp,y.bottom);
+    ctx.stroke();
+    // Label
+    ctx.font="700 11px 'Outfit',sans-serif";
+    ctx.fillStyle=v.color||'#ee3124';
+    ctx.textAlign='center';
+    ctx.fillText('obs',xp,y.top-6);
+    ctx.restore();
+  }
+};
+Chart.register(vlinePlugin);
+
+// ===== NORMAL CURVE FUNCTION =====
+function normalY(x,mean,sd,n,bw){
+  return (1/(sd*Math.sqrt(2*Math.PI)))*Math.exp(-0.5*((x-mean)/sd)**2)*n*bw;
+}
+
+// ===== HISTOGRAM CHART =====
+(function(){
+  const bw=(100-20)/12;
+  const curveX=[],curveY=[];
+  for(let x=20;x<=100;x+=0.5){curveX.push(x);curveY.push(normalY(x,MEAN,SD,N,bw));}
+  const ctx=document.getElementById('histChart').getContext('2d');
+  new Chart(ctx,{
+    data:{
+      labels:HIST.labels,
+      datasets:[
+        {type:'bar',label:'Student Count',data:HIST.data,backgroundColor:'rgba(47,106,175,0.65)',borderColor:'rgba(47,106,175,0.9)',borderWidth:1,borderRadius:3,order:2},
+        {type:'line',label:'Normal Curve (if data were normal)',data:HIST.centers.map((c,i)=>({x:i,y:normalY(c,MEAN,SD,N,bw)})),borderColor:'rgba(222,185,44,0.8)',borderWidth:2.5,borderDash:[6,4],pointRadius:0,fill:false,tension:0.5,order:1}
+      ]
+    },
+    options:{
+      responsive:true,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{position:'top',labels:{boxWidth:12,padding:16,font:{size:11}}},
+        tooltip:{backgroundColor:'rgba(28,28,33,0.95)',titleColor:'#f0ebe3',bodyColor:'#9da2a5',borderColor:'rgba(255,255,255,.1)',borderWidth:1,padding:10,callbacks:{label:function(ctx){return ctx.datasetIndex===0?` Count: ${ctx.raw.toLocaleString()}`:` Normal curve: ${typeof ctx.raw==='object'?ctx.raw.y.toFixed(0):ctx.raw.toFixed(0)}`;}}}
+      },
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:10}}},
+        y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{font:{size:10}},title:{display:true,text:'Number of Students',font:{size:11}}}
+      }
+    }
+  });
+})();
+
+// ===== STUDY METHOD BAR CHART =====
+(function(){
+  const ctx=document.getElementById('smChart').getContext('2d');
+  new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:['Offline','Online','Hybrid'],
+      datasets:[{
+        label:'Average Final Score',
+        data:[83.02,82.85,83.82],
+        backgroundColor:['rgba(47,106,175,0.7)','rgba(193,196,195,0.7)','rgba(238,49,36,0.7)'],
+        borderColor:['rgba(47,106,175,1)','rgba(193,196,195,1)','rgba(238,49,36,1)'],
+        borderWidth:2,borderRadius:5
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:'rgba(28,28,33,0.95)',titleColor:'#28282c',bodyColor:'#5a5f62',borderColor:'rgba(40,40,44,.15)',borderWidth:1,callbacks:{label:ctx=>`Score: ${ctx.raw}`}}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#5a5f62',font:{size:12,weight:'600'}}},
+        y:{min:82,max:84.5,grid:{color:'rgba(40,40,44,.08)'},ticks:{color:'#5a5f62',font:{size:11}},title:{display:true,text:'Avg. Final Score',color:'#5a5f62',font:{size:11}}}
+      },
+      animation:{duration:1200,easing:'easeOutQuart'}
+    }
+  });
+})();
+
+// ===== INCOME BAR CHART =====
+(function(){
+  const ctx=document.getElementById('incChart').getContext('2d');
+  new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:['High','Middle','Low'],
+      datasets:[{
+        label:'Average Final Score',
+        data:[83.17,83.13,83.39],
+        backgroundColor:['rgba(222,185,44,0.6)','rgba(47,106,175,0.6)','rgba(238,49,36,0.6)'],
+        borderColor:['rgba(222,185,44,1)','rgba(47,106,175,1)','rgba(238,49,36,1)'],
+        borderWidth:2,borderRadius:5
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{backgroundColor:'rgba(28,28,33,0.95)',titleColor:'#28282c',bodyColor:'#5a5f62',borderColor:'rgba(40,40,44,.15)',borderWidth:1}
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#5a5f62',font:{size:12,weight:'600'}}},
+        y:{min:82.8,max:83.6,grid:{color:'rgba(40,40,44,.08)'},ticks:{color:'#5a5f62',font:{size:11}},title:{display:true,text:'Avg. Final Score',color:'#5a5f62',font:{size:11}}}
+      },
+      animation:{duration:1200,easing:'easeOutQuart'}
+    }
+  });
+})();
+
+// ===== SIM CHART BUILDER =====
+const simChartInstances={};
+function buildSimChart(id,key,dark){
+  if(simChartInstances[id])return;
+  const d=SIM[key];
+  const obs=d.obs;
+  const colors=d.centers.map(c=>Math.abs(c)>=Math.abs(obs)?'rgba(238,49,36,0.8)':'rgba(47,106,175,0.65)');
+  const borders=d.centers.map(c=>Math.abs(c)>=Math.abs(obs)?'rgba(238,49,36,1)':'rgba(47,106,175,0.9)');
+  const bw=d.centers[1]-d.centers[0];
+  const ctx=document.getElementById(id).getContext('2d');
+  simChartInstances[id]=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels:d.centers.map(c=>c.toFixed(2)),
+      datasets:[{
+        label:'Simulation Count',
+        data:d.counts,
+        backgroundColor:colors,
+        borderColor:borders,
+        borderWidth:1,
+        borderRadius:2,
+        barPercentage:0.95,
+        categoryPercentage:1.0
+      }]
+    },
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'rgba(28,28,33,0.95)',
+          titleColor:'#f0ebe3',bodyColor:'#9da2a5',
+          borderColor:'rgba(255,255,255,.1)',borderWidth:1,
+          callbacks:{
+            title:items=>`Diff ≈ ${parseFloat(items[0].label).toFixed(3)}`,
+            label:ctx=>`Simulations: ${ctx.raw}`
+          }
+        },
+        vline:{value:obs,color:'#ee3124',width:2.5,dash:[]}
+      },
+      scales:{
+        x:{
+          grid:{color:dark?'rgba(255,255,255,.04)':'rgba(40,40,44,.06)'},
+          ticks:{maxTicksLimit:8,font:{size:10},color:dark?'rgba(157,162,165,.8)':'#5a5f62'}
+        },
+        y:{
+          grid:{color:dark?'rgba(255,255,255,.04)':'rgba(40,40,44,.06)'},
+          ticks:{font:{size:10},color:dark?'rgba(157,162,165,.8)':'#5a5f62'},
+          title:{display:true,text:'# Simulations',font:{size:10},color:dark?'rgba(157,162,165,.8)':'#5a5f62'}
+        }
+      },
+      animation:{duration:800,easing:'easeOutQuart'}
+    }
+  });
+}
+
+// ===== TABS =====
+function initTabGroup(tabsId,panels,keys){
+  const tabList=document.getElementById(tabsId);
+  const btns=tabList.querySelectorAll('.tbtn');
+  btns.forEach((btn,i)=>{
+    btn.addEventListener('click',()=>{
+      btns.forEach(b=>{b.classList.remove('act');});
+      btn.classList.add('act');
+      panels.forEach((p,j)=>{
+        const el=document.getElementById(p);
+        el.classList.toggle('act',j===i);
+        if(j===i){
+          const canvas=el.querySelector('canvas');
+          if(canvas)buildSimChart(canvas.id,keys[j],tabsId==='sm-tabs');
+        }
+      });
+    });
+  });
+  // Build first panel
+  buildSimChart('sim-'+keys[0],keys[0],tabsId==='sm-tabs');
+}
+initTabGroup('sm-tabs',['sm0','sm1','sm2'],['sm0','sm1','sm2']);
+initTabGroup('inc-tabs',['inc0','inc1','inc2'],['inc0','inc1','inc2']);
+
+// ===== HERO CANVAS ANIMATION =====
+(function(){
+  const canvas=document.getElementById('hcv');
+  const ctx=canvas.getContext('2d');
+  let W,H,pts=[];
+  const COLORS=['rgba(238,49,36,','rgba(47,106,175,','rgba(222,185,44,'];
+  const N_PTS=160;
+  function resize(){
+    W=canvas.width=canvas.offsetWidth;
+    H=canvas.height=canvas.offsetHeight;
+  }
+  function initPts(){
+    pts=[];
+    for(let i=0;i<N_PTS;i++){
+      const g=Math.floor(Math.random()*3);
+      pts.push({
+        x:Math.random()*W,y:Math.random()*H,
+        vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,
+        r:Math.random()*2.5+1,g,
+        a:Math.random()*.5+.3
+      });
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Draw connections
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<100){
+          const a=(1-dist/100)*0.12;
+          ctx.beginPath();
+          ctx.strokeStyle=`rgba(193,196,195,${a})`;
+          ctx.lineWidth=.8;
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    // Draw dots
+    pts.forEach(p=>{
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=COLORS[p.g]+p.a+')';
+      ctx.fill();
+    });
+  }
+  function update(){
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+    });
+  }
+  let raf;
+  function loop(){
+    update();draw();
+    raf=requestAnimationFrame(loop);
+  }
+  window.addEventListener('resize',()=>{resize();initPts();});
+  resize();initPts();loop();
+})();
+</script>
+</body>
+</html>
