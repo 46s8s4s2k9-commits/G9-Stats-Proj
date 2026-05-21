@@ -1,6 +1,6 @@
 # Study Method × Income → Exam Score
 
-**Integrated Math Plus — Statistics Project Part 2**
+**A Statistical Investigation**
 
 A statistical investigation into whether study method (Offline, Online, Hybrid) and family income level are associated with final exam scores. Uses a Kaggle dataset of 8,000 students.
 

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Grade 9 Integrated Math Plus Statistics Project Part 2 — a single-page academic report investigating whether study method (Offline/Online/Hybrid) and family income level are associated with final exam scores. Dataset: Kaggle's "Student Lifestyle vs. Academic Performance" (n = 8,000).
+Grade 9 statistics project — a single-page academic report investigating whether study method (Offline/Online/Hybrid) and family income level are associated with final exam scores. Dataset: Kaggle's "Student Lifestyle vs. Academic Performance" (n = 8,000).
 
 Authors: Bryan Tu, Andy Sha, Kingsley Sy.
 
